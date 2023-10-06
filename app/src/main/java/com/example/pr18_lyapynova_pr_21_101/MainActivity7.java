@@ -7,9 +7,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MainActivity7 extends AppCompatActivity {
+public class MainActivity7 extends Activity {
 
     ArrayList<Product> products = new ArrayList<Product>();
     BoxAdapter boxAdapter;

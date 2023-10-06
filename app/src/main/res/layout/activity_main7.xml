@@ -25,6 +25,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="5dp"
             android:onClick="showResult"
-            android:text="@string/BoxAdapter"></Button>
+            android:text="@string/box"></Button>
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

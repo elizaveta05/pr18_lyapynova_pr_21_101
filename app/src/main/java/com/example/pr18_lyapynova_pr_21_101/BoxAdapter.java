@@ -1,5 +1,6 @@
 package com.example.pr18_lyapynova_pr_21_101;
 
+
 import java.util.ArrayList;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 
 public class BoxAdapter extends BaseAdapter {
     Context ctx;
