@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.GestureDetector;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
@@ -17,46 +19,63 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity5 extends AppCompatActivity {
 
+    private GestureDetector gestureDetector;
     private static final int CM_DELETE_ID = 1;
     ListView lvData;
     DB db;
     SimpleCursorAdapter scAdapter;
     Cursor cursor;
     Button btn;
-
-    /** Called when the activity is first created. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main5);
-        btn = (Button) findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(MainActivity5.this, MainActivity6.class);
-                startActivity(intent);
-            }
+        btn = findViewById(R.id.btn);
+        btn.setOnClickListener(view -> {
+            Intent intent= new Intent(MainActivity5.this, MainActivity6.class);
+            startActivity(intent);
         });
-
-        // открываем подключение к БД
         db = new DB(this);
         db.open();
-
-        // получаем курсор
         cursor = db.getAllData();
         startManagingCursor(cursor);
-
-        // формируем столбцы сопоставления
         String[] from = new String[] { DB.COLUMN_IMG, DB.COLUMN_TXT };
         int[] to = new int[] { R.id.ivImg, R.id.tvText };
-
-        // создааем адаптер и настраиваем список
         scAdapter = new SimpleCursorAdapter(this, R.layout.item5, cursor, from, to);
-        lvData = (ListView) findViewById(R.id.lvData);
+        lvData = findViewById(R.id.lvData);
         lvData.setAdapter(scAdapter);
-
-        // добавляем контекстное меню к списку
         registerForContextMenu(lvData);
+        //свайп
+        gestureDetector = new GestureDetector(this, new SwipeGestureListener());
     }
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+            float diffY = event2.getY() - event1.getY();
+            float diffX = event2.getX() - event1.getX();
+
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX < 0) {
+
+                    Intent intent = new Intent(MainActivity5.this, MainActivity6.class);
+                    startActivity(intent);
+                    return true;
+                }else {
+                    Intent intent = new Intent(MainActivity5.this, MainActivity4.class);
+                    startActivity(intent);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
 
     // обработка нажатия кнопки
     public void onButtonClick(View view) {

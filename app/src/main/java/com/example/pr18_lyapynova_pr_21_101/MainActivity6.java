@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 
 public class MainActivity6 extends AppCompatActivity {
 
+    private GestureDetector gestureDetector;
     ExpandableListView elvMain;
     DB2 db;
     Button btn1;
@@ -22,36 +25,56 @@ public class MainActivity6 extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main6);
-        btn1=(Button)findViewById(R.id.btn1);
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent= new Intent(MainActivity6.this, MainActivity7.class);
-                startActivity(intent);
-            }
+        btn1=findViewById(R.id.btn1);
+        btn1.setOnClickListener(view -> {
+            Intent intent= new Intent(MainActivity6.this, MainActivity7.class);
+            startActivity(intent);
         });
-
-        // подключаемся к БД
         db = new DB2(this);
         db.open();
-
-        // готовим данные по группам для адаптера
         Cursor cursor = db.getCompanyData();
         startManagingCursor(cursor);
-        // сопоставление данных и View для групп
         String[] groupFrom = { DB2.COMPANY_COLUMN_NAME };
         int[] groupTo = { android.R.id.text1 };
-        // сопоставление данных и View для элементов
         String[] childFrom = { DB2.PHONE_COLUMN_NAME };
         int[] childTo = { android.R.id.text1 };
-
-        // создаем адаптер и настраиваем список
         SimpleCursorTreeAdapter sctAdapter = new MyAdapter(this, cursor,
                 android.R.layout.simple_expandable_list_item_1, groupFrom,
                 groupTo, android.R.layout.simple_list_item_1, childFrom,
                 childTo);
-        elvMain = (ExpandableListView) findViewById(R.id.elvMain);
+        elvMain = findViewById(R.id.elvMain);
         elvMain.setAdapter(sctAdapter);
+
+        //свайп
+        gestureDetector = new GestureDetector(this, new SwipeGestureListener());
+    }
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    private class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY) {
+            float diffY = event2.getY() - event1.getY();
+            float diffX = event2.getX() - event1.getX();
+
+            if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffX < 0) {
+
+                    Intent intent = new Intent(MainActivity6.this, MainActivity7.class);
+                    startActivity(intent);
+                    return true;
+                }else {
+                    Intent intent = new Intent(MainActivity6.this, MainActivity5.class);
+                    startActivity(intent);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     protected void onDestroy() {
