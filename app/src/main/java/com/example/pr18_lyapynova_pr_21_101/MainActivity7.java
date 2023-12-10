@@ -13,7 +13,7 @@ import android.widget.Toast;
 public class MainActivity7 extends Activity {
 
     private GestureDetector gestureDetector;
-    ArrayList<Product> products = new ArrayList<>();
+    ArrayList<Product> products = new ArrayList<Product>();
     BoxAdapter boxAdapter;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,18 +50,22 @@ public class MainActivity7 extends Activity {
             return false;
         }
     }
+
+    // генерируем данные для адаптера
     void fillData() {
         for (int i = 1; i <= 20; i++) {
             products.add(new Product("Product " + i, i * 1000,
                     R.drawable.ic_launcher_foreground, false));
         }
     }
+
+    // выводим информацию о корзине
     public void showResult(View v) {
-        StringBuilder result = new StringBuilder("Товары в корзине:");
+        String result = "Товары в корзине:";
         for (Product p : boxAdapter.getBox()) {
             if (p.box)
-                result.append("\n").append(p.name);
+                result += "\n" + p.name;
         }
-        Toast.makeText(this, result.toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
     }
 }

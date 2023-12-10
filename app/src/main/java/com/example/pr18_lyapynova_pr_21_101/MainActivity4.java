@@ -9,8 +9,10 @@ import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -51,9 +53,11 @@ public class MainActivity4 extends AppCompatActivity {
         lvSimple.setAdapter(sAdapter);
         registerForContextMenu(lvSimple);
 
+
         //свайп
         gestureDetector = new GestureDetector(this, new SwipeGestureListener());
     }
+
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }

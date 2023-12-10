@@ -1,6 +1,5 @@
 package com.example.pr18_lyapynova_pr_21_101;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
